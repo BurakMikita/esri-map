@@ -1,0 +1,28 @@
+.layout-container {
+  display: flex;
+  height: calc(100vh - 50px); /* Sottrae l'altezza della navbar */
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 25%;
+  height: 100%;
+  border-right: 1px solid #ddd;
+
+  @media (min-width: 1200px) {
+    width: 30%;
+  }
+}
+
+.map-container {
+  width: 75%;
+  height: 100%;
+  position: relative;
+
+  @media (min-width: 1200px) {
+    width: 70%;
+  }
+}

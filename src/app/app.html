@@ -1,9 +1,13 @@
-<div class="layout-container">
-  <div class="sidebar">
-    <app-sidebar></app-sidebar>
+<nav class="navbar">
+  <div class="logo">
+    🛰️ Space Tracker
   </div>
-  
-  <div class="map-container">
-    <app-map></app-map>
-  </div>
-</div>
+  <ul class="nav-links">
+    <li><a routerLink="/iss" routerLinkActive="active">Mappa ISS</a></li>
+    <li><a routerLink="/satellites-3d" routerLinkActive="active">Satelliti 3D</a></li>
+  </ul>
+</nav>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>

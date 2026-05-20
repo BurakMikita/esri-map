@@ -63,4 +63,39 @@ export class IssService {
       console.error('Errore nel recupero della posizione ISS:', error);
     }
   }
+
+  issLive3DPosition = signal<{latitude: number, longitude: number} | null>(null);
+  private live3DInterval: any;
+
+  async fetchOpenNotifyPosition() {
+    try {
+      const response = await fetch('http://api.open-notify.org/iss-now.json');
+      const data = await response.json();
+      
+      if (data.message === 'success') {
+        const pos = {
+          latitude: parseFloat(data.iss_position.latitude),
+          longitude: parseFloat(data.iss_position.longitude)
+        };
+        this.issLive3DPosition.set(pos);
+        return pos;
+      }
+    } catch (error) {
+      console.error('Errore API open-notify:', error);
+    }
+    return null;
+  }
+
+  startLive3DTracking() {
+    this.fetchOpenNotifyPosition();
+    this.live3DInterval = setInterval(() => {
+      this.fetchOpenNotifyPosition();
+    }, 10000);
+  }
+
+  stopLive3DTracking() {
+    if (this.live3DInterval) {
+      clearInterval(this.live3DInterval);
+    }
+  }
 }
