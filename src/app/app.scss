@@ -1,0 +1,31 @@
+@import "https://js.arcgis.com/4.29/esri/themes/light/main.css";
+
+.layout-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.sidebar {
+  width: 25%;
+  height: 100%;
+  border-right: 1px solid #ddd;
+
+  @media (min-width: 1200px) {
+    width: 30%;
+  }
+}
+
+.map-container {
+  width: 75%;
+  height: 100%;
+  position: relative;
+
+  @media (min-width: 1200px) {
+    width: 70%;
+  }
+}

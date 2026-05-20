@@ -1,0 +1,42 @@
+<aside class="sidebar-container">
+  <h1>Mappa ISS</h1>
+  <p>Tracciamento della Stazione Spaziale Internazionale in tempo reale.</p>
+  
+  <div class="current-stats" *ngIf="issService.history().length > 0">
+    <p><strong>Velocità attuale:</strong> {{ issService.history()[0].velocity | number:'1.0-0' }} km/h</p>
+    <p><strong>Altitudine attuale:</strong> {{ issService.history()[0].altitude | number:'1.2-2' }} km</p>
+  </div>
+
+  <p>Prossimo aggiornamento in: <strong>{{ issService.countdown() }}</strong> secondi.</p>
+  
+  <div class="history-container">
+    <table class="history-table" *ngIf="issService.history().length > 0; else loadingTpl">
+      <thead>
+        <tr>
+          <th>Icona</th>
+          <th>Latitudine</th>
+          <th>Longitudine</th>
+          <th>Velocità</th>
+          <th>Orario</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pos of issService.history()"
+            (mouseenter)="issService.setHovered(pos)"
+            (mouseleave)="issService.setHovered(null)"
+            [class.hovered-row]="issService.hoveredPosition() === pos">
+          <td>
+            <div class="marker-icon" [class.hovered-marker]="issService.hoveredPosition() === pos"></div>
+          </td>
+          <td>{{ pos.latitude | number:'1.4-4' }}</td>
+          <td>{{ pos.longitude | number:'1.4-4' }}</td>
+          <td>{{ pos.velocity | number:'1.0-0' }} km/h</td>
+          <td>{{ pos.timestamp | date:'dd-MM-yyyy HH:mm:ss' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #loadingTpl>
+      <p>Caricamento dati ISS in corso...</p>
+    </ng-template>
+  </div>
+</aside>
