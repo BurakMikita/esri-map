@@ -24,8 +24,8 @@
 
 .history-container {
   margin-top: 20px;
-  flex: none; /* Убираем растягивание на весь экран */
-  max-height: 210px; /* Высота примерно на заголовок + 4 записи */
+  flex: none; /* Remove full screen stretching */
+  max-height: 210px; /* Height approximately for header + 4 records */
   overflow-y: auto;
   background-color: white;
   border-radius: 8px;

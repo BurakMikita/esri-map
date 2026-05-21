@@ -26,7 +26,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private isInitialCentered = false;
 
   constructor() {
-    // Effetto reattivo: ogni volta che l'array history cambia, si aggiorna la mappa
+    // Reactive effect: updates the map every time the history array changes
     effect(() => {
       const history = this.issService.history();
       if (history.length > 0) {
@@ -34,7 +34,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    // Effetto reattivo: quando si passa il mouse su una riga
+    // Reactive effect: when hovering over a row
     effect(() => {
       const hovered = this.issService.hoveredPosition();
       this.updateHoverMarker(hovered);
@@ -48,7 +48,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   async initMap() {
     try {
       const map = new Map({
-        basemap: 'streets-vector' // Puoi cambiare in "streets-vector", "satellite", ecc.
+        basemap: 'streets-vector' // You can change to "streets-vector", "satellite", etc.
       });
 
       this.view = new MapView({
@@ -58,19 +58,19 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         zoom: 3
       });
 
-      // Simbolo giallo per l'hover
+      // Yellow symbol for hover
       const hoverSymbol = new SimpleMarkerSymbol({
-        color: [255, 204, 0], // Giallo
+        color: [255, 204, 0], // Yellow
         outline: {
-          color: [255, 255, 255], // Bianco
+          color: [255, 255, 255], // White
           width: 2
         },
-        size: "16px" // Leggermente più grande
+        size: "16px" // Slightly larger
       });
 
       this.hoverGraphic = new Graphic({
         symbol: hoverSymbol,
-        visible: false // Nascosto di default
+        visible: false // Hidden by default
       });
 
       this.view.graphics.add(this.hoverGraphic);
@@ -78,14 +78,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       await this.view.when();
       
     } catch (error) {
-      console.error('Errore nel caricamento della mappa: ', error);
+      console.error('Error loading the map: ', error);
     }
   }
 
   updateMarkers(history: any[]) {
     if (!this.view) return;
 
-    // Убираем старые точки, чтобы перерисовать их с правильными стилями
+    // Remove old points to redraw them with correct styles
     if (this.historyGraphics.length > 0) {
       this.view.graphics.removeMany(this.historyGraphics);
     }
@@ -94,12 +94,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       const isLatest = index === 0;
       
       const symbol = new SimpleMarkerSymbol({
-        color: isLatest ? [226, 119, 40] : [226, 119, 40, 0.5], // Полупрозрачные для истории
+        color: isLatest ? [226, 119, 40] : [226, 119, 40, 0.5], // Semi-transparent for history
         outline: {
           color: [255, 255, 255],
           width: isLatest ? 2 : 1
         },
-        size: isLatest ? "14px" : "10px" // Меньший размер для истории
+        size: isLatest ? "14px" : "10px" // Smaller size for history
       });
 
       return new Graphic({
@@ -107,14 +107,22 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           longitude: pos.longitude,
           latitude: pos.latitude
         }),
-        symbol: symbol
+        symbol: symbol,
+        attributes: {
+          name: "ISS",
+          time: new Date(pos.timestamp * 1000).toLocaleString()
+        },
+        popupTemplate: {
+          title: "Stazione Spaziale Internazionale",
+          content: "Latitudine: {latitude}<br>Longitudine: {longitude}<br>Data e ora: {time}"
+        }
       });
     });
 
-    // Добавляем все точки на карту
+    // Add all points to the map
     this.view.graphics.addMany(this.historyGraphics);
 
-    // Centra la mappa solo la prima volta
+    // Center the map only the first time
     if (!this.isInitialCentered && history.length > 0) {
       const latest = history[0];
       this.view.center = [latest.longitude, latest.latitude] as any;

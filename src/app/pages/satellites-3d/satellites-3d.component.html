@@ -1,3 +1,47 @@
 <div class="satellites-container">
   <div #sceneViewNode class="scene-view"></div>
+  
+  <div id="hidden-container" style="display: none;">
+    <div #visibilityWidgetContainer class="visibility-widget-container calcite-mode-light" style="width: 320px; display: block; overflow: visible; visibility: visible;">
+      <app-visibility-search 
+        *ngIf="viewReady"
+        [view]="view!"
+        (search)="onVisibilitySearch($event)">
+      </app-visibility-search>
+    </div>
+  </div>
+
+  <div class="results-panel" *ngIf="visibilityResults.length > 0 || isSearching">
+    <div class="results-header">
+      <h3>Risultati di visibilità</h3>
+      <button class="close-btn" (click)="visibilityResults = []; isSearching = false;">&times;</button>
+    </div>
+    
+    <div *ngIf="isSearching" class="loading-state">
+      Calcolo in corso...
+    </div>
+
+    <div *ngIf="!isSearching && visibilityResults.length === 0" class="empty-state">
+      Nessuna intersezione nell'intervallo specificato.
+    </div>
+
+    <div class="table-container" *ngIf="!isSearching && visibilityResults.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Satellite</th>
+            <th>Data e ora</th>
+            <th>Altitudine (km)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let res of visibilityResults">
+            <td>{{ res.satellite }}</td>
+            <td>{{ res.time | date:'medium' }}</td>
+            <td>{{ res.altitude }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>

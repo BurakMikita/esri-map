@@ -8,6 +8,12 @@ export interface IssPosition {
   timestamp: Date;
 }
 
+export interface SatelliteData {
+  name: string;
+  tleLine1: string;
+  tleLine2: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -57,15 +63,40 @@ export class IssService {
         timestamp: new Date()
       };
       
-      // Aggiunge la nuova posizione all'inizio dell'array (indice 0)
+      // Adds the new position to the beginning of the array (index 0)
       this.history.update(currentHistory => [newPos, ...currentHistory]);
     } catch (error) {
-      console.error('Errore nel recupero della posizione ISS:', error);
+      console.error('Error fetching ISS position:', error);
     }
   }
 
   issLive3DPosition = signal<{latitude: number, longitude: number} | null>(null);
+  celestrakSatellites = signal<SatelliteData[]>([]);
   private live3DInterval: any;
+
+  async loadCelestrakSatellites() {
+    try {
+      // API to download TLEs in real-time (visual list)
+      const response = await fetch('https://celestrak.org/NORAD/elements/gp.php?GROUP=visual&FORMAT=tle');
+      const data = await response.text();
+      
+      const lines = data.split('\n');
+      const sats: SatelliteData[] = [];
+
+      for (let i = 0; i < lines.length - 2; i += 3) {
+        const name = lines[i].trim();
+        const tleLine1 = lines[i + 1].trim();
+        const tleLine2 = lines[i + 2].trim();
+
+        if (tleLine1 && tleLine2) {
+          sats.push({ name, tleLine1, tleLine2 });
+        }
+      }
+      this.celestrakSatellites.set(sats);
+    } catch (error) {
+      console.error('Error fetching Celestrak satellites:', error);
+    }
+  }
 
   async fetchOpenNotifyPosition() {
     try {
@@ -81,7 +112,7 @@ export class IssService {
         return pos;
       }
     } catch (error) {
-      console.error('Errore API open-notify:', error);
+      console.error('open-notify API error:', error);
     }
     return null;
   }
