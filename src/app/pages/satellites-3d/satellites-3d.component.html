@@ -1,22 +1,35 @@
 <div class="satellites-container">
-  <div #sceneViewNode class="scene-view"></div>
-  
-  <div id="hidden-container" style="display: none;">
-    <div #visibilityWidgetContainer class="visibility-widget-container calcite-mode-light" style="width: 320px; display: block; overflow: visible; visibility: visible;">
-      <app-visibility-search 
-        *ngIf="viewReady"
-        [view]="view!"
-        (search)="onVisibilitySearch($event)">
-      </app-visibility-search>
-    </div>
-  </div>
+  <arcgis-scene
+    #scene
+    class="scene-view"
+    basemap="satellite"
+    ground="world-elevation"
+    (arcgisViewReadyChange)="onSceneViewReady()"
+  >
+    <arcgis-expand
+      slot="top-right"
+      expanded
+      mode="floating"
+      visual-scale="m"
+      expand-icon="search"
+      expand-tooltip="Ricerca visibilità satelliti"
+      auto-collapse="false"
+    >
+      @if (view) {
+        <app-visibility-search
+          [view]="view"
+          (search)="onVisibilitySearch($event)">
+        </app-visibility-search>
+      }
+    </arcgis-expand>
+  </arcgis-scene>
 
   <div class="results-panel" *ngIf="visibilityResults.length > 0 || isSearching">
     <div class="results-header">
       <h3>Risultati di visibilità</h3>
       <button class="close-btn" (click)="visibilityResults = []; isSearching = false;">&times;</button>
     </div>
-    
+
     <div *ngIf="isSearching" class="loading-state">
       Calcolo in corso...
     </div>

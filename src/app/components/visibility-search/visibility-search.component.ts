@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, ElementRef, ViewChild, Output, EventEmitter, inject, effect } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges, ElementRef, ViewChild, Output, EventEmitter, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -22,7 +22,7 @@ export interface VisibilitySearchParams {
   templateUrl: './visibility-search.component.html',
   styleUrl: './visibility-search.component.scss'
 })
-export class VisibilitySearchComponent implements OnInit, OnDestroy {
+export class VisibilitySearchComponent implements OnInit, OnChanges, OnDestroy {
   @Input() view!: SceneView;
   @Output() search = new EventEmitter<VisibilitySearchParams>();
 
@@ -60,19 +60,22 @@ export class VisibilitySearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // Initialize dates to today and tomorrow
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    
+
     this.startDate = today.toISOString().slice(0, 16);
     this.endDate = tomorrow.toISOString().slice(0, 16);
+  }
 
-    this.initSketch();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['view']?.currentValue) {
+      this.initSketch();
+    }
   }
 
   private initSketch() {
-    if (!this.view) return;
+    if (!this.view || this.sketchWidget) return;
 
     // If the map is not ready yet, try again shortly
     if (!this.view.map) {
