@@ -35,7 +35,7 @@ import { VisibilitySearchComponent, VisibilitySearchParams } from '../../compone
   templateUrl: './satellites-3d.component.html',
   styleUrl: './satellites-3d.component.scss',
 })
-export class Satellites3dComponent implements AfterViewInit, OnDestroy {
+export class Satellites3dComponent implements  OnDestroy {
   @ViewChild('scene') private sceneEl!: ElementRef<ArcgisScene>;
 
   public view: SceneView | null = null;
@@ -63,10 +63,6 @@ export class Satellites3dComponent implements AfterViewInit, OnDestroy {
         this.renderCelestrakSatellites(sats);
       }
     });
-  }
-
-  ngAfterViewInit() {
-    this.issService.startLive3DTracking();
   }
 
   async onSceneViewReady(): Promise<void> {
@@ -106,41 +102,9 @@ export class Satellites3dComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  // Rimosso il marker ISS Live
   updateISSLiveMarker(latitude: number, longitude: number) {
-    if (!this.view) return;
-
-    const altitude = 400000;
-
-    const point = new Point({
-      longitude,
-      latitude,
-      z: altitude,
-    });
-
-    if (!this.issLiveGraphic) {
-      this.issLiveGraphic = new Graphic({
-        geometry: point,
-        symbol: new SimpleMarkerSymbol({
-          color: [226, 119, 40, 0.9],
-          outline: {
-            color: [255, 255, 255],
-            width: 2,
-          },
-          size: '10px',
-        }),
-        attributes: {
-          name: 'ISS (LIVE API)',
-        },
-        popupTemplate: {
-          title: '{name}',
-          content: 'Tracciamento in tempo reale tramite API open-notify.org',
-        },
-      });
-
-      this.view.graphics.add(this.issLiveGraphic);
-    } else {
-      this.issLiveGraphic.geometry = point;
-    }
+    // Funzione disabilitata
   }
 
   renderCelestrakSatellites(sats: SatelliteData[]) {
@@ -212,7 +176,7 @@ export class Satellites3dComponent implements AfterViewInit, OnDestroy {
       alert('Per favore, seleziona almeno un satellite.');
       return;
     }
-
+   
     this.isSearching = true;
     this.visibilityResults = [];
 
@@ -222,23 +186,39 @@ export class Satellites3dComponent implements AfterViewInit, OnDestroy {
 
     const allSats = this.issService.celestrakSatellites();
     const targetSats = allSats.filter((sat) => params.satelliteIds.includes(sat.name));
-
+    
     if (targetSats.length === 0) {
       alert('Impossibile trovare i dati TLE per i satelliti selezionati. Prova a selezionare satelliti dinamici.');
       this.isSearching = false;
       return;
     }
 
+    // OTTIMIZZAZIONE: Calcoliamo il buffer di 50km sulla geometria dell'utente UNA SOLA VOLTA,
+    // invece di calcolarlo per ogni singolo punto del satellite in ogni minuto.
+    let bufferedGeometry: any = null;
+    try {
+      // Extract the actual geometry if it's wrapped in a Graphic or similar object
+      const geomToBuffer = (params.geometry as any).geometry || params.geometry;
+      bufferedGeometry = geometryEngine.geodesicBuffer(geomToBuffer, 50, 'kilometers');
+    } catch (e) {
+      console.error('Errore nel calcolo del buffer', e);
+      bufferedGeometry = (params.geometry as any).geometry || params.geometry; // Fallback alla geometria senza buffer
+    }
+    
+    const isWebMercator = params.geometry.spatialReference.isWebMercator;
+    
     setTimeout(() => {
       const results: { satellite: string; time: Date; altitude: number }[] = [];
 
       for (const sat of targetSats) {
         try {
           const satrec = satellite.twoline2satrec(sat.tleLine1, sat.tleLine2);
-
+             
           for (let timeMs = startMs; timeMs <= endMs; timeMs += stepMs) {
             const date = new Date(timeMs);
+            
             const positionAndVelocity = satellite.propagate(satrec, date);
+            
             const positionEci = positionAndVelocity?.position;
 
             if (positionEci && typeof positionEci !== 'boolean') {
@@ -257,17 +237,19 @@ export class Satellites3dComponent implements AfterViewInit, OnDestroy {
                   spatialReference: { wkid: 4326 },
                 });
 
-                if (params.geometry!.spatialReference.isWebMercator) {
+                if (isWebMercator) {
                   point = webMercatorUtils.geographicToWebMercator(point) as Point;
                 }
-
-                const buffer = geometryEngine.geodesicBuffer(point, 50, 'kilometers');
-
+   
+                
                 let intersects = false;
-                if (Array.isArray(buffer)) {
-                  intersects = buffer.some((b) => geometryEngine.intersects(b, params.geometry as any));
-                } else if (buffer) {
-                  intersects = geometryEngine.intersects(buffer as any, params.geometry as any);
+                if (Array.isArray(bufferedGeometry)) {
+                  intersects = bufferedGeometry.some((b) => geometryEngine.intersects(b, point));
+                } else if (bufferedGeometry) {
+                  // Ensure we are passing the geometry object properly
+                  // geometryEngine.intersects expects (geometry1, geometry2)
+                  const geom = (bufferedGeometry as any).geometry || bufferedGeometry;
+                  intersects = geometryEngine.intersects(geom, point);
                 }
 
                 if (intersects) {
@@ -285,13 +267,16 @@ export class Satellites3dComponent implements AfterViewInit, OnDestroy {
         }
       }
 
-      this.visibilityResults = results;
-      this.isSearching = false;
+      // Force Angular to detect changes and update the UI
+      this.ngZone.run(() => {
+        this.visibilityResults = results;
+        this.isSearching = false;
+        this.cdr.detectChanges();
+      });
     }, 100);
   }
 
   ngOnDestroy() {
-    this.issService.stopLive3DTracking();
     this.view = null;
   }
 }
