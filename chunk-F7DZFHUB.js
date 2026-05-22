@@ -1,0 +1,11 @@
+import{a as u}from"./chunk-L3VRDRYJ.js";import{a as f}from"./chunk-ZPRRJLBJ.js";import{a as v}from"./chunk-EEIBN36S.js";import{f as l}from"./chunk-A2FJ55XA.js";import{b as c}from"./chunk-3QBD2465.js";import{a as t}from"./chunk-JYIOFSCM.js";import{a as n}from"./chunk-PMVHKVIR.js";import{a as m}from"./chunk-2OFKI5R7.js";import{a as e}from"./chunk-ZMBCTCSM.js";function p(i){let o=new m,{vertex:s,fragment:r,varyings:d}=o;return o.fragment.include(l,i),o.include(f,i),o.include(u,i),c(s,i),o.attributes.add("position","vec3"),o.attributes.add("uv0","vec2"),d.add("vUV","vec2"),d.add("vpos","vec3"),s.main.add(e`vUV = uv0;
+vpos = position;
+forwardViewPosDepth((view * vec4(position, 1.0)).xyz);
+gl_Position = proj * view * vec4(position, 1.0);`),r.uniforms.add(new n("size",a=>a.size)),r.uniforms.add(new t("color1",a=>a.color1)),r.uniforms.add(new t("color2",a=>a.color2)),r.include(v),r.main.add(e`discardByTerrainDepth();
+vec2 uvScaled = vUV / (2.0 * size);
+vec2 uv = fract(uvScaled - 0.25);
+vec2 ab = clamp((abs(uv - 0.5) - 0.25) / fwidth(uvScaled), -0.5, 0.5);
+float fade = smoothstep(0.25, 0.5, max(fwidth(uvScaled.x), fwidth(uvScaled.y)));
+float t = mix(abs(ab.x + ab.y), 0.5, fade);
+fragColor = mix(color2, color1, t);
+outputColorHighlightOLID(applySlice(fragColor, vpos), fragColor.rgb);`),o}var P=Object.freeze(Object.defineProperty({__proto__:null,build:p},Symbol.toStringTag,{value:"Module"}));export{p as a,P as b};

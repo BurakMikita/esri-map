@@ -1,0 +1,1 @@
+import{b as p}from"./chunk-Q3HM3BN7.js";import{O as r,P as o}from"./chunk-PSTJVOJ5.js";import{a as t}from"./chunk-WNSZCIFR.js";var e=class extends p{constructor(s){super(s),this.type="web-scene"}equals(s){return this.type===s.type}};t([r()],e.prototype,"type",void 0),e=t([o("esri.analysis.support.AnalysisOriginWebScene")],e);var l=e;export{l as a};

@@ -1,0 +1,1 @@
+import{wa as o}from"./chunk-NTCPU2VT.js";import{a as r,b as a}from"./chunk-Q7L6LLAK.js";async function n(s,e){return(await o(s,{responseType:"json",query:a(r({f:"json"},e?.customParameters),{token:e?.apiKey})})).data}export{n as a};

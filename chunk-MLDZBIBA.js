@@ -1,0 +1,4 @@
+import{a as c}from"./chunk-KUMSY7WW.js";import{a as i}from"./chunk-L7NOU4T2.js";import{a as n}from"./chunk-2TNKRR5B.js";import{a as l}from"./chunk-2OFKI5R7.js";import{a as o}from"./chunk-K55TYFIP.js";import{a as m}from"./chunk-ZMBCTCSM.js";var a=class extends i{};function u(){let r=new l;r.include(n),r.fragment.include(c);let{fragment:s,outputs:t}=r;return s.uniforms.add(new o("colorTexture",e=>e.colorTexture),new o("alphaTexture",e=>e.alphaTexture)),t.add("fragColor","vec4",0),t.add("fragEmission","vec4",1),s.main.add(m`float srcAlpha = texture(alphaTexture, uv).r;
+vec4 srcColor = texture(colorTexture, uv);
+vec3 dimming = emissionDimming(srcColor.rgb, srcAlpha);
+fragEmission = vec4(dimming, 0.0);`),r}var v=Object.freeze(Object.defineProperty({__proto__:null,OITDimPassParameters:a,build:u},Symbol.toStringTag,{value:"Module"}));export{a,u as b,v as c};

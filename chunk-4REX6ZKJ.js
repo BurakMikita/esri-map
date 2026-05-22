@@ -1,0 +1,1 @@
+import{k as e}from"./chunk-2VC74QTO.js";var r=class{constructor(t){this.layout=t}elementCount(t){return t.get("position").indices.length}write(t,i,o,s,u,n){return e(o,s,this.layout,t,i,u,n)}};export{r as a};

@@ -1,0 +1,1 @@
+import{b as t}from"./chunk-FANNHXD3.js";import{O as a}from"./chunk-PSTJVOJ5.js";import{a as r}from"./chunk-WNSZCIFR.js";var e=class extends t{constructor(){super(...arguments),this.layer=null}get availableFields(){return this.layer.fieldsIndex.fields.map(l=>l.name)}};r([a({readOnly:!0})],e.prototype,"availableFields",null);export{e as a};

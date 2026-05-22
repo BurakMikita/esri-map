@@ -1,0 +1,1 @@
+import{a as n}from"./chunk-EZY3UEHI.js";import{q as i}from"./chunk-FVV7B2BK.js";import{a as c}from"./chunk-JARU7KSM.js";function s(o,r,t){return!!n(o,r,e,t.spatialReference)&&(t.x=e[0],t.y=e[1],t.z=e[2],!0)}async function l(o,r,t,a){return await i(r,t.spatialReference,null,a),s(o,r,t)}var e=c();export{s as a,l as b};

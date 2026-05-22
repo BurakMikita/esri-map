@@ -1,0 +1,1 @@
+import{b as p}from"./chunk-FANNHXD3.js";import{O as s}from"./chunk-PSTJVOJ5.js";import{a as r}from"./chunk-WNSZCIFR.js";var e=class extends p{constructor(){super(...arguments),this.layer=null}get updateSuspended(){let t=this.parent?.dynamicGroupLayerView;return this.suspended&&(!t||t.suspended===!0)}};r([s()],e.prototype,"updateSuspended",null);export{e as a};

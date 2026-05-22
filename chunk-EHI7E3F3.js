@@ -1,0 +1,1 @@
+var t=class{constructor(n){this._gl=n,this._sync=n.fenceSync(n.SYNC_GPU_COMMANDS_COMPLETE,0)}poll(){let n=this._gl,s=n.clientWaitSync(this._sync,n.SYNC_FLUSH_COMMANDS_BIT,0);if(s===n.WAIT_FAILED)throw new Error("clientWaitSync failed");return s!==n.TIMEOUT_EXPIRED}destroy(){this._gl.deleteSync(this._sync),this._sync=null}};export{t as a};

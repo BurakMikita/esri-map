@@ -1,0 +1,1 @@
+import{a as s}from"./chunk-ZUBKX5J2.js";var e=class{constructor(){this._pendingCompressionTasks=s(0)}get compressing(){return!!this._pendingCompressionTasks.value}increment(){this._pendingCompressionTasks.value++}decrement(){this._pendingCompressionTasks.value--}};export{e as a};

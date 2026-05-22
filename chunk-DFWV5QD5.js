@@ -1,0 +1,1 @@
+import{P as r}from"./chunk-PSTJVOJ5.js";import{a as o}from"./chunk-WNSZCIFR.js";var t=Symbol("getSliceableSymbol");function i(e){return typeof e=="object"&&!!e&&t in e}function l(e){return i(e)?e[t]:void 0}var a=class{};a=o([r("esri.graphic.GraphicOrigin")],a);export{t as a,l as b,a as c};

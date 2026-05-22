@@ -1,0 +1,1 @@
+import{c as e}from"./chunk-JARU7KSM.js";import{b as o}from"./chunk-EBNBNVAU.js";function b(n){return o((n-s)/m,0,1)}var s=1e5,m=1e6-s,c=1e4,a=e(5802e-9,13558e-9,331e-7),t=3,r=e(65e-8*t,1881e-9*t,85e-9*t),f=3996e-9,u=e(a[0]+r[0],a[1]+r[1],a[2]+r[2]);export{b as a,s as b,c,a as d,f as e,u as f};

@@ -1,0 +1,1 @@
+import{a}from"./chunk-REFKBNUW.js";import{a as s}from"./chunk-JZPBNIBU.js";import{b as o}from"./chunk-67YVG46W.js";var e=[new s("position",2,o.UNSIGNED_SHORT,0,4)],p=[new s("a_pos",2,o.BYTE,0,2)],i=[new s("a_pos",2,o.BYTE,0,4),new s("a_tex",2,o.BYTE,2,4)],m=a(e);export{e as a,p as b,i as c,m as d};
